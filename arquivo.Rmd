@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE)
 
 library(tidyverse)
+library(tidyr)
 library(dplyr)
 library(stringr)
 library(ggplot2)
@@ -32,4 +33,29 @@ library(knitr)
 getwd()
 enem.original<-read_xlsx("../ME115/enem.xlsx", sheet = "Sheet1")
 str(enem.original)
+head(enem.original, 20)
+View(enem.original)
 ```
+
+# Data cleaning 
+```{r }
+# Sexo
+table(enem.original$Sexo)
+enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^.*Ale.*$|^Male$|^Masculino$", replacement = "M")
+enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^Female$|^Mulher$", replacement = "F")
+table(enem.original$Sexo)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
