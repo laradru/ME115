@@ -2,3 +2,4 @@
 # ME115
 # Classroom R exercises!
 -----------------------------------------------------------------------------------------------
+Here you will find my solutions for the exercises given in class
