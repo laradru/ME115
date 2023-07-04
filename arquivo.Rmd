@@ -12,9 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 -----------------------------------------------------------------------------------------------
 # ME115
 # Classroom R exercises!
+## I have made up this data to serve as an example.
 -----------------------------------------------------------------------------------------------
 
-# Pacotes
+# Packages
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -27,5 +28,5 @@ library(readr)
 library(knitr)
 ```
 
-# Diretório - caminho relativo
+# Directory (relative path)
 
