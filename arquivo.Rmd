@@ -34,7 +34,6 @@ getwd()
 enem.original<-read_xlsx("../ME115/enem.xlsx", sheet = "Sheet1")
 str(enem.original)
 head(enem.original, 20)
-View(enem.original)
 ```
 
 # Data cleaning 
@@ -43,8 +42,10 @@ View(enem.original)
 table(enem.original$Sexo)
 enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^.*Ale.*$|^Male$|^Masculino$", replacement = "M")
 enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^Female$|^Mulher$", replacement = "F")
-table(enem.original$Sexo)
 
+# Age
+enem.original$DataNasc <- as.character(enem.original$DataNasc)
+enem.original$DataNasc <- ymd(enem.original$DataNasc)
 ```
 
 
