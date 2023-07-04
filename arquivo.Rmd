@@ -18,6 +18,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Packages
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+
 library(tidyverse)
 library(dplyr)
 library(stringr)
@@ -29,4 +31,6 @@ library(knitr)
 ```
 
 # Directory (relative path)
+```{r }
 
+```
