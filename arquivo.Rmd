@@ -8,7 +8,7 @@ output: html_document
 -----------------------------------------------------------------------------------------------
 # ME115
 # Classroom R exercises!
-## I have made up this data to serve as an example.
+## I have made up this data to serve as an example for practicing.
 -----------------------------------------------------------------------------------------------
 
 # Packages
@@ -33,7 +33,6 @@ library(knitr)
 getwd()
 enem.original<-read_xlsx("../ME115/enem.xlsx", sheet = "Sheet1")
 str(enem.original)
-head(enem.original, 20)
 ```
 
 # Data cleaning 
@@ -43,17 +42,35 @@ table(enem.original$Sexo)
 enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^.*Ale.*$|^Male$|^Masculino$", replacement = "M")
 enem.original$Sexo %<>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^Female$|^Mulher$", replacement = "F")
 
-# Age
+# DataNasc
 enem.original$DataNasc <- as.character(enem.original$DataNasc)
 enem.original$DataNasc <- ymd(enem.original$DataNasc)
 ```
 
+# Create the variable "Age" from DataNasc. You must consider that students performed the exame on 20-Oct-2015.
+```{r }
+datadaprova <- ymd("2015-10-20")
+enem.original$Age <- interval(enem.original$DataNasc, datadaprova)/dyears(1)
 
+View(enem.original)
+str(enem.original)
+```
+# Create a table for Age with the min, max, quantiles, mean, sd values.
+```{r }
 
+```
+# Plot an histogram for Age. Interpret it.
+```{r }
 
+```
+# Create the variable FinalGrade, from the mean of CN,CH,LC,MT. Make a list of the best 10 students based on their grades.
+```{r }
 
+```
+# Create an objetc "enem_jovens" with only the single ones and with age >= 17 and <=24. How many of them were deleted from the database?
+```{r }
 
-
+```
 
 
 
