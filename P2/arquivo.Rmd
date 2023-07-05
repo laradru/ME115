@@ -31,7 +31,7 @@ library(knitr)
 # Directory (relative path)
 ```{r }
 getwd()
-enem.original<-read_xlsx("../ME115/enem.xlsx", sheet = "Sheet1")
+enem.original<-read_xlsx("../P2/enem.xlsx", sheet = "Sheet1")
 str(enem.original)
 ```
 
