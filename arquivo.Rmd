@@ -85,8 +85,40 @@ enem.original %>% slice_max(FinalGrade, n = 10)
 ```
 # Create an object "enem_jovens" with only the single ones and with age >= 17 and <=24. How many of them were deleted from the database?
 ```{r }
-
+enem_jovens <- enem.original %>% filter(EstadoCivil == "Solteiro") %>% filter(Age >= 17 & Age <= 24)
 ```
+# Create a table with n, mean, sd of FinalGrade by sex and EscolaEM 
+```{r }
+datayoung <- enem_jovens %>% select(c("Sexo", "EscolaEM", "FinalGrade")) %>% group_by(EscolaEM, Sexo) %>% summarise(n = n(), Media = mean(FinalGrade), standard.deviation = sd(FinalGrade))
+
+kable(datayoung, digits = 1, caption = "Tabela")
+```
+# Bar graph for Mean - by Sex and EscolaEM 
+```{r }
+datayoung %>% ggplot(aes(x = EscolaEM, y= Media, fill = Sexo)) + geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Tipo de escola", y = "Media", fill = "Sexo", title = "Gráfico...", subtitle = "Fonte: ficticia") +
+  theme_bw()
+```
+
+# Boxplot for FinalGrade by InstrMae
+```{r }
+enem_jovens %>% ggplot(aes(x = InstrMae, y = FinalGrade)) + geom_boxplot() +
+  labs(x = "Escolaridade da Mae", y = "Nota final", title = "Gráfico...", subtitle = "Fonte: ficticia") +
+  theme_bw()
+```
+# Boxplot for FinalGrade by InstrMae and EscolaEM
+```{r }
+enem_jovens %>% ggplot(aes(x = EscolaEM, y = FinalGrade, fill = InstrMae)) + geom_boxplot() +
+  labs(x = "Tipo de Escola", y = "Nota final", fill = "Mae", title = "Gráfico...", subtitle = "Fonte: ficticia") +
+  theme_bw()
+```
+# Scatterplot NotaMT and NotaCN. Color by EscolaEM
+```{r }
+enem_jovens %>% ggplot(aes(x = NotaMT, y = NotaCN, color = EscolaEM)) + geom_point() +
+  labs(x = "Mat", y = "Natureza", color = "Tipo Escola", title = "Gráfico...", subtitle = "Fonte: ficticia") +
+  theme_bw()
+```
+
 
 
 
