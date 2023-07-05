@@ -7,6 +7,45 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+# Packages
+```{r }
+library(tidyr)
+library(tidyverse)
+library(stringr)
+library(magrittr)
+library(ggplot2)
+library(readr)
+library(readxl)
+library(lubridate)
+library(dplyr)
+library(httr)
+library(RCurl)
+library(knitr)
+```
+# Dataframe:
+```{r }
+getwd()
+mental.health <- read.csv("../Seminar/survey.csv")
 ```
 
-teste
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
