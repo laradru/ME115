@@ -51,23 +51,39 @@ enem.original$DataNasc <- ymd(enem.original$DataNasc)
 ```{r }
 datadaprova <- ymd("2015-10-20")
 enem.original$Age <- interval(enem.original$DataNasc, datadaprova)/dyears(1)
-
+table(is.na(enem.original$Age))
 View(enem.original)
 str(enem.original)
 ```
 # Create a table for Age with the min, max, quantiles, mean, sd values.
 ```{r }
+descritiva <- function(variavel){
+  medidas <- summary(variavel)
+  standard.deviation <-sd(variavel)
+  return(c(medidas, SD = standard.deviation))
+}
 
+descritiva <- descritiva(enem.original$Age)
+kable(descritiva, col.names = "valor" , digits = 2, caption = "Teste")
 ```
 # Plot an histogram for Age. Interpret it.
+Candidates were 15-54 yo. Distribuition is assymetric. The majority is young (mean age  = 21.51)
 ```{r }
+enem.original %>% ggplot(aes(x = Age)) + geom_histogram(binwidth = 0.8, col = 1) +
+  labs(x = "Idade dos candidatos", y = "Frquência", title = "Distribuição das idades") +
+  theme_bw()
 
 ```
 # Create the variable FinalGrade, from the mean of CN,CH,LC,MT. Make a list of the best 10 students based on their grades.
 ```{r }
+# enem.original$FinalGrade <- apply(enem.original[, 4:7], 1, mean)
+# or
+enem.original <- enem.original %>% mutate(FinalGrade = (NotaCN + NotaCH + NotaLC + NotaMT)/4)
 
+#best students:
+enem.original %>% slice_max(FinalGrade, n = 10)
 ```
-# Create an objetc "enem_jovens" with only the single ones and with age >= 17 and <=24. How many of them were deleted from the database?
+# Create an object "enem_jovens" with only the single ones and with age >= 17 and <=24. How many of them were deleted from the database?
 ```{r }
 
 ```
