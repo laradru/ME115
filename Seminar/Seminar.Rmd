@@ -28,10 +28,14 @@ library(knitr)
 ```{r }
 getwd()
 mental.health <- read.csv("../Seminar/survey.csv")
+str(mental.health)
 ```
-
+# Cleaning
 ```{r }
+# Age
 
+
+# Sex
 ```
 
 ```{r }
