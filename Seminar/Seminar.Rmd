@@ -32,10 +32,42 @@ str(mental.health)
 ```
 # Cleaning
 ```{r }
-# Age
+# Age:
+# 1st histogram - something weird
+mental.health %>% ggplot(aes(x=Age)) + geom_histogram(binwidth = 30, col=1) +
+  labs(x = "Idade", y = "Frequencia", title = "Histograma da idade") +
+  theme_bw()
+# descritive statistics
+descritiva <- function(variavel){
+  media = mean(variavel)
+  sd = sd(variavel)
+  maximo = max(variavel)
+  minimo = min(variavel)
+  variancia = var(variavel)
+  cv = (sd/media)*100
+  quantis = quantile(variavel)
+  
+  return(c(média = media, desvio = sd, máximo = maximo, mínimo = minimo, variância = variancia, CV = cv, quartis = quantis))
+}
+descritiva(mental.health$Age)
+#Removing outliers - replacing with mean
+mental.health %>% filter(Age < 18 | Age > 90)
+mh<-mental.health %>% filter(Age > 17 & Age < 91)
+descritiva(mh$Age)
+mh %>% ggplot(aes(x=Age)) + geom_histogram(binwidth = 1, col=1) +
+  labs(x = "Idade", y = "Frequencia", title = "Histograma da idade") +
+  theme_bw()
+mental.health$Age <- ifelse(mental.health$Age < 18 | mental.health$Age > 90, 32.076739, mental.health$Age)
+
+descritiva(mental.health$Age)
 
 
-# Sex
+# Sex:
+
+
+
+
+
 ```
 
 ```{r }
