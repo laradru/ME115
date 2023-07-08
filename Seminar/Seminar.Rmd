@@ -21,7 +21,6 @@ library(readxl)
 library(lubridate)
 library(dplyr)
 library(httr)
-library(RCurl)
 library(knitr)
 ```
 # Dataframe:
@@ -63,10 +62,20 @@ descritiva(mental.health$Age)
 
 
 # Sex:
-
-
-
-
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_remove_all(pattern = "\\-|\\(|\\)|\\/")
+table(mental.health$Gender)
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^.*Trans.*$", replacement = "Transgender")
+table(mental.health$Gender)
+mental.health$Gender<- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace_all(pattern = "^.*Queer.*$|^.*queer.*$", replacement = "Gender-Queer")
+table(mental.health$Gender)
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace(pattern = "^Female$|^Femail$|^Femake$|^F$|^.*Female.*$|^.*femme.*$", replacement = "Woman")
+table(mental.health$Gender)
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace(pattern = "^Enby$|^Nonbinary$", replacement = "Non-binary")
+table(mental.health$Gender)
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace(pattern = "^Male$|^Mail$|^Make$|^Male$|^Maile$|^M$|^Malr$|^Mal$|^Msle$|^Malr$|^.*Man.*$|^.*Cis.*$", replacement = "Man")
+table(mental.health$Gender)
+mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace(pattern = "^A Little About You$|^All$|^Guy.*$|^Maleish$|^Nah$|^P$|^Agender$|^Androgyne$|^Neuter$|^.*Male.*$", replacement = "Other")
+table(mental.health$Gender)
 
 ```
 
