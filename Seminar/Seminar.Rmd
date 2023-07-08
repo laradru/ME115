@@ -77,7 +77,73 @@ table(mental.health$Gender)
 mental.health$Gender <- mental.health$Gender %>% str_squish() %>% str_to_title() %>% str_replace(pattern = "^A Little About You$|^All$|^Guy.*$|^Maleish$|^Nah$|^P$|^Agender$|^Androgyne$|^Neuter$|^.*Male.*$", replacement = "Other")
 table(mental.health$Gender)
 
+
+
+# Grouping "Other"
+mental.health$Gender2<- ifelse(mental.health$Gender == "Fluid" | mental.health$Gender == "Gender-Queer" | mental.health$Gender == "Non-Binary"| mental.health$Gender == "Transgender" | mental.health$Gender == "Other", "Others", mental.health$Gender)
+table(mental.health$Gender2)
 ```
+
+# Create a table for Age with the min, max, quantiles, mean, sd values.
+```{r }
+d <- descritiva(mental.health$Age)
+kable(d, col.names = "Values", digit = 2, caption = "Descriptive statistics for age")
+```
+# Histogram for age
+```{r }
+mental.health %>% ggplot(aes(x=Age)) + geom_histogram(col=1) +
+  labs(x= "Age of participants", y= "Frequency", title = "Distribuitions of age")+
+  theme_bw()
+```
+# Create variable Condition
+```{r }
+table(is.na(mental.health$work_interfere))
+mental.health$Condition <- ifelse(is.na(mental.health$work_interfere), "No", "Yes")
+```
+# Condition x Gender2
+```{r }
+mental.health %>% ggplot(aes(x = Gender2, fill= Condition)) + geom_bar() +
+  labs(x = "Genger", y = "Frequency", fill = "Condition") +
+  theme_bw()
+
+#or
+
+mental.health %>% ggplot(aes(x = Gender2, fill= Condition)) + geom_bar(position = "dodge") +
+  labs(x = "Genger", y = "Frequency", fill = "Condition", title = "Condition of mental health by Gender") +
+  theme_bw()
+```
+# Condition and Company
+```{r }
+table(mental.health$benefits)
+table(mental.health$care_options)
+table(mental.health$wellness_program)
+table(mental.health$seek_help)
+table(mental.health$anonymity)
+table(mental.health$leave)
+
+pontuacao <- function(df, variaveis, respostas.positivas){
+  points <- rep(0, nrow(df))
+  for (j in variaveis) {
+    for (i in 1:nrow(df)) {
+      if (df[i,j] %in% respostas.positivas){
+        points[i] <- points[i] + 1
+      }
+    }
+  }
+  df$Points <- points
+  return(df)
+}
+
+new_mental.health <- pontuacao(mental.health, c("benefits", "care_options", "wellness_program", "seek_help", "anonymity", "leave"), c("Yes", "Somewhat easy", "Very easy"))
+
+new_mental.health %>% count(Points, Condition) 
+
+new_mental.health %>% count(Points, Condition) %>% ggplot(aes(x = Points, y = Condition)) + geom_tile(aes(fill = n)) +
+  labs(x = "Pontuacao", y = "Condition of mental healt", title = "Graph") +
+  theme_bw()
+
+```
+
 
 ```{r }
 
@@ -87,10 +153,21 @@ table(mental.health$Gender)
 
 ```
 
-```{r }
-
-```
 
 ```{r }
 
 ```
+
+```{r }
+
+```
+
+
+
+
+
+
+
+
+
+
