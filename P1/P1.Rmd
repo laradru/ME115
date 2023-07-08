@@ -1,0 +1,64 @@
+---
+title: "P1"
+author: "Lara"
+date: "2023-07-08"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+# Packages
+```{r}
+library(readr)
+library(readxl)
+library(tidyr)
+library(tidyverse)
+library(magrittr)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+```
+
+# Construa uma matriz 3 × 50 e preencha cada coluna com uma amostra aleatória de uma distribução normal com média 5, 6 e 6, respectivamente, e desvio padrão igual 1,3. Adicione os seguintes nomes às colunas da matriz Nota1, Nota2 e Nota3, respectivamente. (0,75 ponto)
+```{r }
+matriz <- mapply(rnorm, 50, mean = c(5,6,6), sd = 1.3)
+colnames(matriz) <- c("Nota1", "Nota2", "Nota3")
+
+matriz
+```
+
+# Supondo que cada coluna da matriz do item (a) represente a nota em uma dada avaliação e que cada linha represente um aluno que realizou a prova: transforme a matriz em um dataframe e adicione uma coluna com a nota média do aluno e outra coluna indicando “Aprovado” se a nota média foi maior ou igual a 5 e “Reprovado” caso contrário. (0,75 ponto)
+```{r }
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
