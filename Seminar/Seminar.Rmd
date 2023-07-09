@@ -4,7 +4,10 @@ author: "Lara"
 date: "2023-07-05"
 output: pdf_document
 ---
-
+-----------------------------------------------------------------------------------------------
+# Seminar
+# Dataset from kaggle.com
+-----------------------------------------------------------------------------------------------
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE)

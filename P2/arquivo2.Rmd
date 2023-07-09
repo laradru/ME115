@@ -1,0 +1,42 @@
+---
+title: "P2A"
+author: "Lara"
+date: "2023-07-09"
+output: pdf_document
+---
+
+-----------------------------------------------------------------------------------------------
+# P2 - ClassA
+-----------------------------------------------------------------------------------------------
+# Packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(magrittr)
+library(lubridate)
+library(readr)
+library(readxl)
+library(knitr)
+```
+
+# Directory (relative path)
+```{r }
+getwd()
+enem.original<-read_xlsx("../P2/enem.xlsx", sheet = "Sheet1")
+str(enem.original)
+```
+
+
+
+# Leia os dados no R e salve-o num objeto chamado transfer, usando uma função apropriada do pacote readr. Verifique se os tipos das colunas estão corretos e modifique-os caso seja necessário.
+```{r }
+transfer <- read_xlsx("../P2/transfer.xlsx", sheet = "Sheet1")
+```
+
+

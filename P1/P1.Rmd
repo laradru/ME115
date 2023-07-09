@@ -172,6 +172,3 @@ soma_pares(vetor)
 ```
 
 
-```{r }
-
-```
