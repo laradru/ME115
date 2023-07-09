@@ -28,15 +28,89 @@ library(knitr)
 # Directory (relative path)
 ```{r }
 getwd()
-enem.original<-read_xlsx("../P2/enem.xlsx", sheet = "Sheet1")
-str(enem.original)
-```
-
-
-
-# Leia os dados no R e salve-o num objeto chamado transfer, usando uma função apropriada do pacote readr. Verifique se os tipos das colunas estão corretos e modifique-os caso seja necessário.
-```{r }
 transfer <- read_xlsx("../P2/transfer.xlsx", sheet = "Sheet1")
+str(transfer)
 ```
+
+```{r }
+str(transfer)
+transfer$Data <- ymd(transfer$Data)
+```
+#Use as funções do dplyr para encontrar as transferências de valor acima de $15.000, que possua a Alemanha como país de destino, e que tenha ocorrido no dia 23 de dezembro de 2018. Perceba que todas essas condições, ou características da transferência devem ser atendidas ao mesmo tempo. Guarde o novo data frame no objeto transf_23. Além disso, quantas transferências foram encontradas e quais foram as 10 tranferências mais altas? (1,5 pontos)
+```{r }
+transf_23 <- transfer %>% filter(Data == "2018-12-23" & Valor > 15000 & Pais == "Alemanha")
+str(transf_23) # 27 transferencias
+transf_23 %>% slice_max(Valor, n=10)
+```
+# 2. Utilizando os dados transf_23 (questão 1):
+# a) Use as funções do dplyr para criar uma tabela chamada transf_user contendo o número de transferências registradas por usuário, a média, o desvio padrão e o máximo dos valores transferidos por usuário. Ou seja, esta tabela deve conter cinco colunas, com
+#• Usuario: o username do usuário do banco responsável por realizar a transferência; 
+#• n: número de transferências registradas por usuário;
+#• media: média dos valores transferidos por usuário;
+#• dp: desvio padrão dos valores transferidos por usuário;
+#• max: máximo padrão dos valores transferidos por usuário. (1,0 ponto)
+
+```{r }
+str(transf_23)
+info <- transf_23 %>% group_by(Usuario) %>% summarize(n=n(), média = mean(Valor), desvio = sd(Valor), maximo = max(Valor))
+kable(info, digits = 1)
+```
+
+# Ordene o objeto transf_user em ordem decrescente de números de transferências. (0,5 ponto)
+```{r }
+info %>% slice_max(n, n=8)
+```
+
+# Refaça a questão 1 considerando as transferências ocorridas durante os dias 20 a 23 de dezembro de 2018. Guarde o novo data frame no objeto transf20_23. Dica: função between do dplyr. (1,5 pontos)
+```{r }
+transf20_23 <- transfer %>% filter(between(Data, as.Date("2018-12-20"),as.Date("2018-12-23")) & Valor > 15000 & Pais == "Alemanha")
+str(transf20_23) # 29 transferencias
+transf20_23 %>% slice_max(Valor, n=10)
+```
+# Considerando os dados transf20_23 (questão 3), refaça a questão 2. Guarde o novo data frame no objeto transf_user20_23. (1,0 ponto)
+```{r }
+transf_user20_23 <- transf20_23 %>% group_by(Usuario) %>% summarize(n = n(), média = mean(Valor), desvio = sd(Valor), maximo = max(Valor))
+kable(transf_user20_23)
+transf_user20_23 %>% slice_max(n, n=10)
+```
+# Considerando os dados transf_user20_23 (questão 4):
+a) Use as funções do dplyr para selecionar as variáveis, Usuario, n e media. Guarde o novo data
+frame no objeto transfer_media. (0,5 ponto)
+```{r }
+transfer_media <- transf_user20_23 %>% select("Usuario", "n", "média")
+
+```
+b) Adicione ao novo data frame uma nova variavél com os valores das transferências médias em reais (media_real), considere que $1 = R$5,15. (0,75 ponto)
+```{r }
+transfer_media$media_real <- transfer_media$média * 5.15
+```
+c) Faça um gráfico de barras da média dos valores em reais transferidos por usuários. Atenção aos rótulos (título, subtítulo e eixos). (0,75 ponto)
+```{r }
+transfer_media %>% ggplot(aes(x = Usuario, y = media_real)) + geom_bar(stat = "identity") +
+  labs(x = "Usuarios", y = "Frequencia", title = "Titulo") +
+  theme_bw()
+```
+# 6. Considerando os dados transf20_23 (questão 3):
+a) Faça um boxplot dos valores transferidos por usuários. Atenção aos rótulos (título, subtítulo e
+eixos). (1,0 ponto)
+```{r }
+transf20_23 %>% ggplot(aes(x = Usuario, y = Valor)) + geom_boxplot() +
+  labs(x = "Usuarios", y = "Valores transfereidos", title = "Distribuicao", subtitle = ".") +
+  theme_bw()
+```
+
+b) Refaça o gráfico item (a) separando por Data. (1,0 ponto)
+```{r }
+transf20_23 %>% ggplot(aes(x = Usuario, y = Valor)) + geom_boxplot() +
+  facet_wrap(~Data) +
+  labs(x = "Usuarios", y = "Valores transfereidos", title = "Distribuicao", subtitle = ".") +
+  theme_bw()
+```
+
+c)7. Você desconfia de algum usuário? (0,5 ponto)
+Descarto Eva, Jean, Luan
+
+
+
 
 
