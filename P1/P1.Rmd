@@ -33,32 +33,145 @@ matriz
 
 # Supondo que cada coluna da matriz do item (a) represente a nota em uma dada avaliação e que cada linha represente um aluno que realizou a prova: transforme a matriz em um dataframe e adicione uma coluna com a nota média do aluno e outra coluna indicando “Aprovado” se a nota média foi maior ou igual a 5 e “Reprovado” caso contrário. (0,75 ponto)
 ```{r }
+df <- as.data.frame(matriz)
 
+df$NotaMedia <- apply(df[,1:3], 1, mean)
+
+df$Classificacao <- ifelse(df$NotaMedia >= 5, "Aprovado", "Reprovado")
+
+df
+```
+
+#Apresente estatísticas descritivas de posição e de dispersão da nota média dos alunos. Qual o número e a porcentagem de alunos aprovados? (0,75 ponto)
+```{r }
+descritivas <- function(variavel){
+  medidas = summary(variavel)
+  cv = (sd(variavel)/mean(variavel))*100
+  sd = sd(variavel)
+  return(c(medidas, Coef.Var = cv, Desvio.Padrao = sd))
+}
+descritivas(df$NotaMedia)
+
+table(df$Classificacao)
+```
+# Calcule a média geométrica das notas dos alunos dada por raiz cubica (X1 × X2 × X3) em que X1, X2 e X3 representam as notas na avaliação 1, 2 e 3, respectivamente. Apresente estatísticas descritivas de posição e de dispersão da média geométrica dos alunos. (0,75 ponto)
+```{r }
+media.geom <- function(banco){
+  valores <- rep(0, nrow(banco))
+    for (i in 1:nrow(banco)){
+      valores[i] <- (banco[i,1]*banco[i,2]*banco[i,3])^(1/3)
+    }
+  return(valores)
+}
+
+df$Media.Geom <- media.geom(df)
+
+descritivas(df$Media.Geom)
+```
+# Escrever uma função que converta o valor da temperatura de graus Celsius para Fahrenheit e vice-versa, de Celcius para Kelvin e vice-versa, e de Fahrenheit para Kelvin e vice-versa, de acordo com o solicitado pelo usuário. A função deve ter três argumentos: x que é o valor da temperatura na escala original, entrada que é unidade de medida da temperatura na entrada ( C para Celcius, F para Fahrenheit e K para Kelvin) e saida que é unidade de medida da temperatura na conversão ( C para Celcius, F para Fahrenheit e K para Kelvin). A função deve retornar o valor da temperatura na nova unidade de medida e a unidade de medida. Teste sua função convertendo de 30C para Kelvin, e de 34K para Fahrenheit.Observação: F = C × 1, 8 + 32, K = C + 273, F = (K − 273) × 1, 8 + 32
+```{r }
+tranformacao <- function(x, entrada, saida){
+  temperatura <- 0
+  if (entrada == "C") {
+    if (saida == "F") {
+      temperatura <- x * 1.8 + 32
+    }
+    if (saida == "K") {
+      temperatura <- x + 273
+    }
+  }
+ 
+  if (entrada == "F") {
+    if (saida == "C") {
+      temperatura <- (x - 32)/1.8
+    }
+    if (saida == "K") {
+      temperatura <- ((x - 32)/1.8) + 273
+    }
+  }
+  
+  if (entrada == "K") {
+    if (saida == "C") {
+      temperatura <- x - 273
+    }
+    if (saida == "F") {
+      temperatura <- (x - 273) * 1.8 + 32
+    }
+  }
+  
+  if (entrada == saida) {
+    temperatura <- x
+  }
+  return(c(temperatura, saida))
+}
+
+tranformacao(30, "C", "K")
+tranformacao(34, "K", "F")
+```
+# Nessa questão, exploraremos o conjunto de dados data(swiss) do pacote datasets (da base do R). O conjunto de dados contém medidas de fertilidade padronizada e indicadores socioeconômicos para cada uma das 47 províncias de língua francesa da Suíça por volta de 1888. As variáveis presentes no banco de dados são:
+#• Fertility: medida de fertilidade padronizada comum,
+#• Agriculture: % de homens que trabalhavm na agricultura,
+#• Examination: % de recrutas recebendo a nota mais alta no exame do exército,
+#• Education: % de educação além da escola primária para recrutas,
+#• Catholic: % ‘católico’ (em oposição a ‘protestante’),
+#• Infant.Mortality: % nascidos vivos que vivem menos de 1 ano.
+#(a) Use funções apropriadas para descrever esse conjunto de dados. Cite o número de variáveis e o número de observações. Mostre um tabela com os nomes das variáveis e suas respectivas classes. (0,75 ponto)
+```{r }
+library(datasets)
+data(swiss)
+str(swiss)
+
+# 6 var, 47 observações...variaveis numericas
+ var <- sapply(swiss, class)
+ kable(var, col.names = "Classe")
+```
+
+#Apresente uma tabela que contenha os valores de média, mediana, desvio padrão, mínimo, máximo e coeficiente de variacao para cada uma das variaveis do banco de dados.
+```{r }
+kable(apply(swiss, 2, descritivas), digits = 2)
+```
+
+#Crie uma variável que separe as provincias em quatro grupos: até 50% de católicos e até 50% de trabalhadores agrícolas; mais de 50% de católicos e até 50% de trabalhadores agrícolas; até 50% de católicos e mais de 50% de trabalhadores agrícolas; e, mais de 50% de católicos e mais de 50% de trabalhadores agrícolas. Apresenta uma tabela com a proporção de provincias por grupo (dica, utilize a função prop.table) (0,75 ponto)
+
+```{r }
+# até 50% de católicos e até 50% de trabalhadores agrícolas = a
+# mais de 50% de católicos e até 50% de trabalhadores agrícolas = b
+# até 50% de católicos e mais de 50% de trabalhadores agrícolas = c
+# mais de 50% de católicos e mais de 50% de trabalhadores agrícolas = d
+
+swiss$CathAgri <- ifelse(swiss$Catholic <= 50 & swiss$Agriculture <= 50, "a", 
+                         ifelse(swiss$Catholic > 50 & swiss$Agriculture <= 50, "b", 
+                                ifelse(swiss$Catholic <= 50 & swiss$Agriculture > 50, "c", "d")))
+
+```
+#(d) Calcule, em uma única linha de comando, estatísticas descritivas como a média, mediana e desvio-padrão da taxa de fertilidade padronizada segundo o grupo. Apresente os resultados. (Dica: utilizar uma função da família apply) (0,75 ponto)
+```{r }
+tapply(swiss$Fertility, swiss$CathAgri, descritivas)
+```
+
+# Escreva uma função chamada soma_pares que recebe um vetor de números inteiros como argumento e retorna a soma e a quantidade apenas dos números pares no vetor. Aplique a função no vetor (1, 2, 3, 5, 6, 7, 8, NA, 10, 11, 12, 14, 15)
+```{r }
+vetor <- c(1, 2, 3, 5, 6, 7, 8, NA, 10, 11, 12, 14, 15)
+
+soma_pares <- function(vetor){
+  soma <- 0
+  npares <- 0
+  
+  for (i in 1:length(vetor)) {
+    if (!is.na(vetor[i]) & is.numeric(vetor[i]) & vetor[i] %% 2 == 0) {
+      soma <- soma + vetor[i]
+      npares <- npares + 1
+    }
+  }
+  
+  return(c(soma, npares)) 
+}
+
+
+soma_pares(vetor)
 ```
 
 
+```{r }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
