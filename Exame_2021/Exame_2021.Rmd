@@ -1,0 +1,93 @@
+---
+title: "Exame_2021"
+author: "Lara"
+date: "2023-07-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warnings = FALSE)
+```
+
+-----------------------------------------------------------------------------------------------
+# Exame
+# 2021
+-----------------------------------------------------------------------------------------------
+1. Considere a geração de 100 pontos de uma distribuição normal com média 2 e variância 4. Para isso, insira seu RA como valor de semente e rode o código abaixo.
+
+```{r }
+semente <- 292102 ##inserir seu RA aqui 
+set.seed(semente)
+dados <- rnorm(100, mean = 2, sd = 2)
+dados
+```
+
+a. Construa uma função chamada log.like que receba um valor de mi , sigma^2 e o objeto dados . A seguir, calcule o logaritmo da verossimilhança baseada na distribuição normal com média mi e variância sigma^2. A função deve retornar o valor calculado. (1.5 pontos)
+```{r }
+log.like <- function(mi, sigma2, objeto){
+  soma <- 0
+  for (i in 1:length(objeto)){
+    soma <- soma + (objeto[i] - mi)^2
+  }
+  
+  calculado <- 0.05 - (1/(2*(sigma2)))*soma
+  
+  return(calculado)
+}
+
+log.like(10, 1, dados)
+
+```
+b. Crie um vetor chamado a partir de uma sequencia de -10 a 10, com intervalo entre os pontos igual a 0.1. A seguir, usando o comando de repetição for , para cada valor de mu.hat chame a função log.like usando o mu.hat da vez, o objeto dados e o verdadeiro valor de usado para gerar os dados no objeto dados , guardando o valor retornado no vetor loglike , que deve ter o mesmo tamanho do vetor mu.hat . Após a execução do for , imprima o valor de mu.hat equivalente ao valor máximo do vetor loglike . Este resultado é uma forma de encontrar o estimador de máxima verossimilhança de . Espera-se que o valor impresso na tela seja próximo de , que foi o valor da média usada para gerar os dados. (3.5 pontos)
+
+```{r }
+
+```
+
+2. Considere o conjunto de dados em http://leg.ufpr.br/~walmes/data/ninfas.txt (http://leg.ufpr.br/~walmes/data/ninfas.txt), do Prof. Walmes Zeviani, e guarde no objeto ninfas . Os dados são resultado de um experimento em bloco, segundo diferentes espécies, considerando total de ninfas encontradas segundo a posição na planta: superior, médio, inferior. Ninfas são prejudiciais à planta.
+
+a. Faça um gráfico de pontos e linhas ilustrando a quantidade total de ninfas (somar inferior, médio e superior) nos meses de janeiro e dezembro, independente do ano, por variedade no bloco 1. As cores das linhas devem variar de acordo com a variedade. Qual variedade tem maior prejuízo? Qual tem menor prejuízo? Justifique. (3 pontos)
+```{r }
+library(readr)
+library(readxl)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(lubridate)
+library(ggplot2)
+library(magrittr)
+library(knitr)
+
+url <- "http://leg.ufpr.br/~walmes/data/ninfas.txt"
+ninfas <- read_delim(url)
+str(ninfas)
+
+ninfas$data <- ymd(ninfas$data)
+ninfas$mes <- month(ninfas$data)
+ninfas$bloco <- as.character(ninfas$bloco)
+ninfas$total.ninfas <- apply(ninfas[,4:6], 1, sum)
+
+a <- ninfas %>% filter(mes == 1 | mes == 12) %>% filter (bloco == 1) %>% group_by(variedade, mes) %>% summarize(total.ninfa = sum(total.ninfas))
+a %>% ggplot(aes(x= mes, y = total.ninfa, color = variedade)) + geom_line() + 
+  geom_point() + 
+  labs (x = "m", y = " total de ninfas", color = "Variedades", title = "Total de ninfas no bloco 1") +
+  theme_bw()
+```
+
+b. Apresente os resultados do valor médio de ninfas encontradas ao longo da planta, segundo bloco e variedade. Qual a variedade mais sensível em cada bloco? (2 pontos)
+```{r }
+b <- ninfas %>% group_by(bloco, variedade) %>% summarize(media = mean(total.ninfas))
+b
+
+b %>% ggplot(aes(x= bloco, y = media, fill= variedade)) + geom_bar(stat = "identity", position = "dodge") +
+  labs(x= "..", y = "...") +
+  theme_bw()
+
+```
+
+
+```{r }
+
+```
