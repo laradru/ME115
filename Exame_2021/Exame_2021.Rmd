@@ -39,11 +39,7 @@ log.like <- function(mi, sigma2, objeto){
 log.like(10, 1, dados)
 
 ```
-b. Crie um vetor chamado a partir de uma sequencia de -10 a 10, com intervalo entre os pontos igual a 0.1. A seguir, usando o comando de repetição for , para cada valor de mu.hat chame a função log.like usando o mu.hat da vez, o objeto dados e o verdadeiro valor de usado para gerar os dados no objeto dados , guardando o valor retornado no vetor loglike , que deve ter o mesmo tamanho do vetor mu.hat . Após a execução do for , imprima o valor de mu.hat equivalente ao valor máximo do vetor loglike . Este resultado é uma forma de encontrar o estimador de máxima verossimilhança de . Espera-se que o valor impresso na tela seja próximo de , que foi o valor da média usada para gerar os dados. (3.5 pontos)
 
-```{r }
-
-```
 
 2. Considere o conjunto de dados em http://leg.ufpr.br/~walmes/data/ninfas.txt (http://leg.ufpr.br/~walmes/data/ninfas.txt), do Prof. Walmes Zeviani, e guarde no objeto ninfas . Os dados são resultado de um experimento em bloco, segundo diferentes espécies, considerando total de ninfas encontradas segundo a posição na planta: superior, médio, inferior. Ninfas são prejudiciais à planta.
 
