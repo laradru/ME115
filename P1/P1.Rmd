@@ -170,5 +170,151 @@ soma_pares <- function(vetor){
 
 soma_pares(vetor)
 ```
+-----------------------------------------------------------------------------------------------
+# P1 - ClassA
+-----------------------------------------------------------------------------------------------
+Questão 1 (2,5 pontos)
+
+(a) Construir uma matriz 10 × 10 tal que as entradas são iguais a i*j, sendo i a linha e j a coluna. (1,00 ponto)
+```{r }
+l <- c(1:10)
+c <- c(1:10) 
+
+fm <- function(vetor.l, vetor.c){
+  matrizfm <- matrix(0, length(vetor.l), length(vetor.c))
+  for(i in 1:length(vetor.l)){
+    for (j in 1:length(vetor.c)){
+      matrizfm[i,j] <- vetor.l[i]*vetor.c[j]
+    }
+  }
+  return(matrizfm)
+}
+
+fm(l,c)
+```
+(b) Construir um data frame com três colunas: x, x2 e exp(x), com x variando de 0 a 50 em uma unidade. (0,75 ponto)
+
+```{r }
+x <- c(0:50)
+x2<- x^2
+expx<- exp(x)
+data.frame(x, x2, expx)
+```
+(c) Seja x = (12, 11, 14, 15, 10, 11, 14, 11). Calcule E = −nλ + (Pni=1 xi) log(λ) − Pni=1 log(xi!), onde n é o número de elementos do vetor x, λ = 10 e log é o logaritmo natural. Dica: o fatorial de um número pode ser obtido utilizando a função factorial(). (0,75 ponto)
+
+```{r }
+x.1 <- c(12, 11, 14, 15, 10, 11, 14, 11)
+length(x.1)
+#E = −nλ + (Sni=1 xi) log(λ) − Sni=1log(xi!)
+E <- (-1)*(length(x.1))*10 + (sum(x.1))*log(10) - sum(log(factorial(x.1)))
+E
+```
+
+(a) Escreva uma função que retorne o imposto pago por mulheres e por homens, sabendo que as mulheres pagam 10% e que os homens pagam 5% a mais do que as mulheres. A função deve ter dois parâmetros: x que é o valor a ser calculado e sexo que é o sexo da pessoa. Faça com que a função retorne o valor do imposto pago dependendo do sexo da pessoa. Teste sua função calculando o imposto do valor de 1000 de uma mulher e de um homem. (1,00 ponto)
+```{r }
+imposto <- function(x, sexo){
+  valor <- 0
+  if (sexo == "mulher"){
+    valor <- x*0.1
+  }
+  else{
+    valor <- x*0.15
+  }
+  
+  
+  return(valor)
+}
+
+imposto(1000, "homem")
+```
+
+Questão 3
+Nessa questão, exploraremos o conjunto de dados airquality. O conjunto de dados contém medições diárias da qualidade do ar de Nova York durante um período de cinco meses e possui as seguintes informações:
+• Ozone: concentração média de ozônio (ppb),
+• Solar.R: radiação solar (Langley),
+• Wind: velocidade média do vento (mph),
+• Temp: temperatura máxima diária em graus Fahrenheit,
+• Month: mês numérico (maio=5, junho=6 e assim por diante), 
+• Day: dia numérico do mês (1-31).
+Há muitas coisas que seriam interessantes de se olhar neste conjunto de dados. 
+Qual foi a temperatura média durante o período? 
+Qual dia foi o mais quente? 
+Qual dia foi o mais ventoso? 
+Em que dias a temperatura foi superior a 90 graus Fahrenheit?
+```{r }
+data("airquality")
+str(airquality)
+```
+
+(a) Responda a, pelo menos, três das perguntas citadas acima. (0,75 ponto)
+```{r }
+mean(airquality$Temp)
+
+airquality %>% slice_max(Temp, n=10)
+
+airquality %>% slice_max(Wind, n=10)
+
+airquality %>% filter(Temp >90)
+```
+
+(b) Use funções apropriadas para descrever esse conjunto de dados. 
+Cite o número de variáveis, número de observações e os nomes das variáveis que ele armazena. (0,75 ponto)
+
+```{r }
+str(airquality)
+```
+c) A função cut() pode ser usada para criar uma variável categórica a partir de uma variável numérica, dividindo-a em categorias correspondentes a diferentes intervalos. Utilizando essa função, crie uma nova variável categórica nos dados de qualidade do ar, chamada TempCat, que divide a variável Temp em três intervalos (50, 70], (70, 90], (90, 110). Adicione a nova variável categórica (TempCat) ao objeto airquality. (0,75 ponto)
+```{r }
+airquality$TempCat <- cut(airquality$Temp, breaks = c(50, 70, 90, 110))
+
+```
+(d) Usando uma função da família apply, calcule a radiação solar média para cada um dos intervalos da variável TempCat. (0,75 ponto)
+```{r }
+solar.R.TempCat <- airquality %>% group_by(TempCat) %>% summarise(mean(Solar.R))
+kable(solar.R.TempCat)
+
+#or
+
+tapply(airquality$Solar.R, airquality$TempCat, mean)
+```
+
+
+Indice de diversidade de Shannon:
+
+```{r }
+shannon <- function(dados){ 
+  prop <- dados/sum(dados) 
+  res <- numeric()
+  n <- length(prop)
+  for(i in 1:n){ 
+    if(prop[i] > 0){
+      res[i] <- prop[i]*log(prop[i])
+      }
+    else {
+      res[i] <- 0
+      }
+  }
+  
+  H <- -sum(res)
+  
+  return(H)
+}
+
+x <- c(235,218,192,0,20,11,11,8,7,4,3,2,2,1,1)
+shannon(x)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
