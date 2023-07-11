@@ -4,7 +4,10 @@ author: "Lara"
 date: "2023-07-10"
 output: pdf_document
 ---
+#-------------------------------------------------------------------------------------------------------------------------------------
+# Dados obtidos do site https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata
 
+#-------------------------------------------------------------------------------------------------------------------------------------
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warnings = FALSE)
@@ -52,7 +55,7 @@ movies.clean$release_date <- year(movies.clean$release_date)
 
 # unindo bancos
 ```{r }
-movies.clean %<>% left_join(credits, by = join_by(id == movie_id)) %>% select(-c(crew, title.y))
+#movies.clean %<>% left_join(credits, by = join_by(id == movie_id)) %>% select(-c(crew, title.y))
 
 movies.clean %<>% select(-c(cast.y, title.x))
 ```
@@ -98,25 +101,72 @@ movies.clean %>% select(title, vote_average) %>% filter(vote_average >= 7) %>% s
 Nessa caso, é necessário definir o que iremos considerar um “filme rentável”. Para isso, vamos definir aleatoriamente um valor de corte para classificar os filmes como lucrativo ou não. Digamos que 50 milhões de dólares seja um valor razoável.
 Selecione apenas o subconjunto de filmes lucrativos e trabalhe com esse subconjunto para apresentar um gráfico apropriado que:
 ```{r }
-
+movies.proft <- movies.clean %>% filter(lucro >= 50000000)
+```
+a. contenha uma linha representando o lucro total por ano de lançamento. Identifique no gráfico qual ano
+apresentou o maior lucro.
+```{r }
+movies.proft %>% group_by(release_date) %>% summarise(soma = sum(lucro)) %>% ggplot(aes(x = release_date, y= soma/10^6)) + geom_line() +
+  labs(x = "Ano de lancamento", y = "Lucro total", title = " ...", subtitle = "...") +
+  theme_bw()
 ```
 
 ```{r }
-
+movies.proft %>% select(title, release_date, lucro) %>% group_by(release_date) %>% summarise(soma = sum(lucro)) %>% slice_max(soma)
 ```
+
+b. mostrando a frequência de cada gênero de filme. Qual é o gênero mais frequente? Veja que gênero está em um formato diferente conhecido como JSON. É preciso extrair as informações de gênero antes de conseguir fazer o gráfico.
 
 ```{r }
+library(jsonlite)
+# Usando o pacote purrr
+library(purrr)
+# Extrair os gêneros de cada filme e colocar em um vetor
+generos <- unlist(map(movies.proft$genres, ~ fromJSON(.)$name))
+# Extrair quantos gêneros têm cada filme
+n_generos <- map_int(movies.proft$genres, ~ length(fromJSON(.)$name))
 
+
+# Criar um tibble contendo os filmes e seus respectivos gêneros em linhas distintas
+df_genero <- tibble(title = rep(movies.proft$title, times = n_generos), generos)
+df2 <- df_genero %>% count(generos) %>%
+  mutate(prop = n/sum(n)) %>%
+  arrange(desc(prop))
+
+df2 %>%
+  ggplot(aes(x = reorder(generos, prop), y = prop)) +
+  geom_bar(stat = "identity", fill = 4) +
+  coord_flip() +
+  labs(x = "Gêneros", y = "Proporção") +
+  theme_bw()
 ```
-
-
+c. mostrando o elenco mais frequente. Comente.
 ```{r }
+elenco <- unlist(map(movies.proft$cast, ~ fromJSON(.)$name))
+n_elenco <- map_int(movies.proft$cast, ~ length(fromJSON(.)$name))
+df_cast <- tibble(title = rep(movies.proft$title, times = n_elenco), elenco)
 
+# Gráfico dos 15 atores/atrizes mais frequentes
+df_cast %>% count(elenco, name = 'atuacoes') %>%
+  slice_max(atuacoes, n = 15) %>%
+  ggplot(aes(x = reorder(elenco, atuacoes), y = atuacoes)) +
+  geom_bar(aes(fill = ..x..), stat = "identity", show.legend = FALSE) +
+  coord_flip() +
+  scale_fill_gradient(low = "blue", high = "darkgreen") +
+  labs(title = "Top 15 atores/atrizes mais atuantes",
+       x = "Atores", y = "Número de Atuações")
 ```
+a distribuição do lucro por gênero de filme.
+```{r }
+df_genero %<>% bind_cols(lucro = rep(movies.proft$lucro, times = n_generos))
+df_genero
 
-
-
-
+df_genero %>% select(generos, lucro) %>% group_by(generos) %>%
+  ggplot(aes(x = reorder(generos, lucro, median), y= lucro/10^6)) + geom_boxplot()+
+  labs(x = "generos", y = "lucro", title = "qq coisa") +
+  theme_bw() +
+  coord_flip() 
+```
 
 
 
