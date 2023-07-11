@@ -1,0 +1,94 @@
+---
+title: "Untitled"
+author: "Lara"
+date: "2023-07-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warnings = FALSE)
+```
+
+Pacotes
+```{r }
+library(readr)
+library(readxl)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(lubridate)
+library(knitr)
+library(magrittr)
+library(reshape2)
+library(tibble)
+```
+
+Crie o conjunto de dados chamado nba que seja um tibble com as colunas a seguir. Esse conjunto de dados está no formato tidy? Se não estiver, explique.
+```{r }
+player <- c("James", "Durant", "Curry", "Harden", "Paul", "Wade")
+team <- c("CLEOH", "GSWCA", "GSWCA", "HOUTX", "HOUTX", "CLEOH")
+day1points <- c(25, 23, 30, 41, 26, 20)
+day2points <- c(24, 25, 33, 45, 26, 23)
+
+nba <- tibble(player, team, day1points, day2points)
+str(nba)
+```
+Transforme o conjunto de dados nba para o formato tidy, usando cada uma das funções abaixo. Note que as colunas player e teams estão fixas.
+```{r }
+nba.tidy <- pivot_longer(nba, cols= 3:4, names_to = "day", values_to = "points")
+``` 
+
+Transforme os objetos de volta para o formato wide.
+
+```{r }
+nba.wide <- pivot_wider(nba.tidy, names_from = "day", values_from = "points")
+``` 
+
+4. A coluna team é um pouco estranha. Obviamente, há mais de uma variável lá e temos que consertá-la. O time e o estado dos EUA são nossas variáveis, então temos que criar duas colunas, uma para o time (team) e outra para o estado (state).
+```{r }
+nba.wide <- separate(nba.wide, col = 2, into = c("team", "state"), sep = 3)
+``` 
+
+
+```{r }
+wide <- tibble(ID = 1:10,
+               Face.1 = c(411, 723, 325, 456, 579, 612, 709, 513, 527, 379),
+               Face.2 = c(123, 300, 400, 500, 600, 654, 789, 906, 413, 567),
+               Face.3 = c(1457, 1000, 569, 896, 956, 2345, 780, 599, 1023, 678))
+head(wide)
+``` 
+Utizando esse conjuto de dados:
+a. Organize o banco de dados wide e guarde-o no objeto long, criando as colunas Face e ResponseTime.
+```{r }
+long <- pivot_longer(wide, cols = 2:3, names_to = "Face", values_to = "ResponseTime")
+long
+``` 
+b. Separe o número da palavra “Face” na coluna Face, guardando a palavra “Face” na coluna Target e o número na coluna Number. Guarde o novo data frame no objeto long_separate.
+
+```{r }
+long_separate <- separate(long, col = 3, into = c("Target", "Number"), sep = "\\.")
+long_separate
+``` 
+c. Junte o conteúdo de Target e Number e guarde em Face. Guarde o novo data frame no objeto long_unite.
+
+```{r }
+long_unite <- unite(long_separate, Face, Target, Number, sep = "_")
+long_unite
+``` 
+No último slide da aula, ficou a tarefa de colocarmos os dados iris no formato tidy.
+```{r }
+iris
+iris_tidy <- pivot_longer(iris, cols = 1:4, names_to = "Local", values_to = "Values")
+iris_tidy <- separate(iris_tidy, col = 2, into = c("Local", "Measure"), sep = "\\.")
+iris_tidy
+``` 
+
+```{r }
+``` 
+
+
+
+
