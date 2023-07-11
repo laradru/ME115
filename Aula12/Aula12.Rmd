@@ -1,0 +1,123 @@
+---
+title: "Aula12"
+author: "Lara"
+date: "2023-07-10"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warnings = FALSE)
+```
+
+
+# Pacotes
+```{r }
+library(readr)
+library(readxl)
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(lubridate)
+library(magrittr)
+library(knitr)
+```
+# Dados
+```{r }
+getwd()
+movies <- read.csv("..//Aula12/archive/tmdb_5000_movies.csv")
+credits <- read.csv("..//Aula12/archive/tmdb_5000_credits.csv")
+str(credits)
+str(movies)
+```
+#Limpeza
+Remover colunas irrelevantes, linhas duplicadas
+```{r }
+excluidas <- c("homepage", "keywords", "original_title", "original_language", "overview", "status", "production_companies", "tagline")
+
+movies.clean <- movies %>% select(-all_of(excluidas))
+
+table(movies.clean %>% duplicated())
+movies.clean <- movies.clean %>% unique()
+
+movies.clean <- movies.clean %>% filter(budget != 0 & revenue != 0)
+str(movies.clean)
+```
+
+```{r }
+movies.clean$release_date <- year(movies.clean$release_date)
+```
+
+# unindo bancos
+```{r }
+movies.clean %<>% left_join(credits, by = join_by(id == movie_id)) %>% select(-c(crew, title.y))
+
+movies.clean %<>% select(-c(cast.y, title.x))
+```
+a. Resuma as informações sobre budget. 
+Quais são os 5 filmes mais caros? Compare os extremos (mais caros e mais baratos). 
+Explorando os filmes mais caros, pode-se dizer se valeu a pena o dinheiro gasto com base no desempenho (vote_average) e na receita gerada (revenue)? Comente.
+```{r }
+summary(movies.clean$budget)
+
+movies.clean %>% select(title,vote_average, revenue, budget) %>% slice_max(budget, n=10)
+
+movies.clean %>% select(title, budget) %>% slice_min(budget, n=10)
+```
+Quais são os 5 filmes que geraram maior receita (revenue)? 
+Apresente as estatísticas sumárias dessa variável. Dica: slice_max().
+```{r }
+movies.clean %>% select(title, revenue) %>% slice_max(revenue, n=5)
+
+movies.clean %>% summarize(n = n(), media = mean(revenue), median = median(revenue), sd = sd(revenue), max = max(revenue), min = min(revenue))
+```
+c. Quais são os 5 filmes mais rentáveis? Se você subtrair o orçamento (budget) da receita gerada (revenue), isso resultará no lucro ganho. Calcule essa variável de chame-a de profit. Apresente as estatística sumárias do lucro. A comparação entre os mais rentáveis e os menos rentáveis nos ajuda a identificar as diferentes abordagens que falharam e foram bem-sucedidas.
+
+```{r }
+movies.clean$lucro <- movies.clean$revenue - movies.clean$budget
+movies.clean %>% summarize(n = n(), media = mean(lucro), median = median(lucro), sd = sd(lucro), max = max(lucro), min = min(lucro))
+
+movies.clean %>% select(title, lucro) %>% slice_max(lucro, n=5)
+```
+d. Quais são os filmes mais populares (popularity)?
+```{r }
+movies.clean %>% select(title, popularity) %>% slice_max(popularity, n=5)
+```
+e. Calcule as estatísticas sumárias do tempo de duração dos filmes. Qual é a média de duração dos filmes?
+```{r }
+movies.clean %>% summarize(n = n(), media = mean(runtime), median = median(runtime), sd = sd(runtime), max = max(runtime), min = min(runtime))
+```
+f. Quais filmes obtiveram nota média 7 ou superior (vote_average)?
+```{r }
+movies.clean %>% select(title, vote_average) %>% filter(vote_average >= 7) %>% slice_max(vote_average)
+```
+
+“Qual é a receita para fazer um filme lucrativo e de grande sucesso?”
+Nessa caso, é necessário definir o que iremos considerar um “filme rentável”. Para isso, vamos definir aleatoriamente um valor de corte para classificar os filmes como lucrativo ou não. Digamos que 50 milhões de dólares seja um valor razoável.
+Selecione apenas o subconjunto de filmes lucrativos e trabalhe com esse subconjunto para apresentar um gráfico apropriado que:
+```{r }
+
+```
+
+```{r }
+
+```
+
+```{r }
+
+```
+
+
+```{r }
+
+```
+
+
+
+
+
+
+
+
